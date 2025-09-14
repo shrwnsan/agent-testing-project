@@ -179,8 +179,30 @@ case $ACTION in
         ;;
         
     finish)
-        # Auto-detect next version
-        VERSION=$(get_next_version)
+        # Find the most recently created version directory
+        VERSION=""
+        if [ -d "test-results" ]; then
+            # Find the highest version number in test-results directory
+            local highest_version=0
+            for dir in test-results/v[0-9]*; do
+                if [ -d "$dir" ]; then
+                    # Extract version number from directory name
+                    local version_dir=$(basename "$dir")
+                    if [[ $version_dir =~ ^v([0-9]+)$ ]]; then
+                        local version_num=${BASH_REMATCH[1]}
+                        if (( version_num > highest_version )); then
+                            highest_version=$version_num
+                            VERSION="$version_dir"
+                        fi
+                    fi
+                fi
+            done
+        fi
+        
+        # If no version directory found, default to v1
+        if [ -z "$VERSION" ]; then
+            VERSION="v1"
+        fi
         
         # Extract version number for template (e.g., "v2" -> "2")
         VERSION_NUMBER=${VERSION#v}
