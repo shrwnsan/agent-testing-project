@@ -136,7 +136,7 @@ The script automatically:
 1. **Before Each Test Session**:
    ```bash
    git checkout clean
-   git reset --hard b2c2663
+   git reset --hard ae09a1f
    ```
 
 2. **During Testing**: Run your agents in Qwen Code
