@@ -111,23 +111,19 @@ preserve_artifacts() {
     
     # Get list of modified, added, or deleted files (excluding the test-results directory itself)
     # We use --porcelain for machine-readable output
-    local changed_files=$(git status --porcelain | grep -v "^D" | cut -c4- | grep -v "^test-results/")
-    
-    # Process each changed file
-    if [ -n "$changed_files" ]; then
-        echo "$changed_files" | while IFS= read -r file; do
-            if [ -n "$file" ] && [ -f "$file" ]; then
-                # Get directory structure and create it in artifacts
-                local dir_path=$(dirname "$file")
-                mkdir -p "test-results/$version_dir/artifacts/$dir_path"
-                
-                # Copy file to artifacts directory
-                cp "$file" "test-results/$version_dir/artifacts/$file"
-                echo "  Copied $file"
-                ((copied_count++))
-            fi
-        done
-    fi
+    # Process each changed file using process substitution to avoid subshell variable issues
+    while IFS= read -r file; do
+        if [ -n "$file" ] && [ -f "$file" ]; then
+            # Get directory structure and create it in artifacts
+            local dir_path=$(dirname "$file")
+            mkdir -p "test-results/$version_dir/artifacts/$dir_path"
+            
+            # Copy file to artifacts directory
+            cp "$file" "test-results/$version_dir/artifacts/$file"
+            echo "  Copied $file"
+            ((copied_count++))
+        fi
+    done < <(git status --porcelain | grep -v "^D" | cut -c4- | grep -v "^test-results/")
     
     # Handle the case where there are no changed files
     if [ $copied_count -eq 0 ]; then
