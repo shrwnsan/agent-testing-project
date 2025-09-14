@@ -170,7 +170,7 @@ case $ACTION in
         NEXT_VERSION=$(get_next_version)
         echo "Next test version will be: $NEXT_VERSION"
         git checkout clean
-        git reset --hard 25f149e
+        git reset --hard fd92f02
         # Create the version directory to reserve it
         mkdir -p "test-results/$NEXT_VERSION"
         echo "Ready for agent testing!"
