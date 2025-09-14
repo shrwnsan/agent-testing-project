@@ -166,10 +166,14 @@ done
 case $ACTION in
     start)
         echo "Starting clean testing environment..."
+        # Determine the next version before cleaning the environment
+        NEXT_VERSION=$(get_next_version)
+        echo "Next test version will be: $NEXT_VERSION"
         git checkout clean
         git reset --hard ac9a4d3
         echo "Ready for agent testing!"
         echo "Run your agents now, then run './scripts/agent-test.sh finish' from any branch"
+        echo "This test session will create results in test-results/$NEXT_VERSION/"
         ;;
         
     finish)
