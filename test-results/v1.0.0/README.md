@@ -48,6 +48,20 @@ The reason we used general-purpose agents is that in Qwen Code's TUI, the way to
 
 This approach allowed us to verify the concepts and functionality effectively while maintaining control over the testing process.
 
+## Test Artifacts
+
+During the v1.0.0 test, the general-purpose agents created or modified the following files:
+
+- `docs/api.md` - Enhanced API documentation
+- `tests/authService.test.js` - Expanded test suite
+
+These files were generated in their respective directories and demonstrate the types of output our actual agents would produce. They have been preserved in the `artifacts/` subdirectory to maintain the original directory structure while keeping them organized within this version's directory:
+
+- `artifacts/docs/api.md` - Enhanced API documentation
+- `artifacts/tests/authService.test.js` - Expanded test suite
+
+This preserves the artifacts for historical reference while maintaining a clean state in the main project directories for future testing.
+
 ## Future Testing
 
 For future tests, we recommend:
