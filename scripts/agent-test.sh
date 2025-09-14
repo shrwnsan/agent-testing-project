@@ -178,53 +178,7 @@ case $ACTION in
         echo "This test session will create results in test-results/$NEXT_VERSION/"
         ;;
         
-    finish)
-        # Find the most recently created version directory
-        VERSION=""
-        if [ -d "test-results" ]; then
-            # Find the highest version number in test-results directory
-            local highest_version=0
-            for dir in test-results/v[0-9]*; do
-                if [ -d "$dir" ]; then
-                    # Extract version number from directory name
-                    local version_dir=$(basename "$dir")
-                    if [[ $version_dir =~ ^v([0-9]+)$ ]]; then
-                        local version_num=${BASH_REMATCH[1]}
-                        if (( version_num > highest_version )); then
-                            highest_version=$version_num
-                            VERSION="$version_dir"
-                        fi
-                    fi
-                fi
-            done
-        fi
-        
-        # If no version directory found, default to v1
-        if [ -z "$VERSION" ]; then
-            VERSION="v1"
-        fi
-        
-        # Extract version number for template (e.g., "v2" -> "2")
-        VERSION_NUMBER=${VERSION#v}
-        
-        echo "Finishing test session for version $VERSION..."
-        git checkout main
-        
-        # Create README.md from template
-        create_test_results_readme "$VERSION" "$VERSION_NUMBER"
-        
-        # Preserve test artifacts
-        preserve_artifacts "$VERSION"
-        
-        echo "Test session completed for version $VERSION"
-        echo "Test results template created at test-results/$VERSION/README.md"
-        echo "Test artifacts preserved in test-results/$VERSION/artifacts/"
-        echo ""
-        echo "Please review and update test-results/$VERSION/README.md with your actual results,"
-        echo "then commit your results:"
-        echo "  git add test-results/$VERSION/"
-        echo "  git commit -m \"Document $VERSION test results\""
-        ;;
+    finish)\n        # Find the most recently created version directory\n        VERSION=\"\"\n        if [ -d \"test-results\" ]; then\n            # Find the highest version number in test-results directory\n            highest_version=0\n            for dir in test-results/v[0-9]*; do\n                if [ -d \"$dir\" ]; then\n                    # Extract version number from directory name\n                    version_dir=$(basename \"$dir\")\n                    if [[ $version_dir =~ ^v([0-9]+)$ ]]; then\n                        version_num=${BASH_REMATCH[1]}\n                        if (( version_num > highest_version )); then\n                            highest_version=$version_num\n                            VERSION=\"$version_dir\"\n                        fi\n                    fi\n                fi\n            done\n        fi\n        \n        # If no version directory found, default to v1\n        if [ -z \"$VERSION\" ]; then\n            VERSION=\"v1\"\n        fi\n        \n        # Extract version number for template (e.g., \"v2\" -> \"2\")\n        VERSION_NUMBER=${VERSION#v}\n        \n        echo \"Finishing test session for version $VERSION...\"\n        git checkout main\n        \n        # Create README.md from template\n        create_test_results_readme \"$VERSION\" \"$VERSION_NUMBER\"\n        \n        # Preserve test artifacts\n        preserve_artifacts \"$VERSION\"\n        \n        echo \"Test session completed for version $VERSION\"\n        echo \"Test results template created at test-results/$VERSION/README.md\"\n        echo \"Test artifacts preserved in test-results/$VERSION/artifacts/\"\n        echo \"\"\n        echo \"Please review and update test-results/$VERSION/README.md with your actual results,\"\n        echo \"then commit your results:\"\n        echo \"  git add test-results/$VERSION/\"\n        echo \"  git commit -m \\\"Document $VERSION test results\\\"\"\n        ;;
         
     *)
         show_help
