@@ -106,35 +106,34 @@ preserve_artifacts() {
     
     echo "Preserving test artifacts from current test session..."
     
-    # Method 1: Copy commonly modified files (simple approach)
-    local common_files=(
-        "docs/api.md"
-        "tests/authService.test.js"
-        "src/authService.js"
-        "src/index.js"
-    )
-    
+    # Method 2: Detect actual changes using git status (advanced approach)
     local copied_count=0
-    for file in "${common_files[@]}"; do
-        if [ -f "$file" ]; then
-            # Get directory structure and create it in artifacts
-            local dir_path=$(dirname "$file")
-            mkdir -p "test-results/$version_dir/artifacts/$dir_path"
-            
-            # Copy file to artifacts directory
-            cp "$file" "test-results/$version_dir/artifacts/$file"
-            echo "  Copied $file"
-            ((copied_count++))
-        fi
-    done
     
-    # Method 2: Try to detect actual changes (advanced approach)
-    # This would require more complex logic to compare with clean branch
+    # Get list of modified, added, or deleted files (excluding the test-results directory itself)
+    # We use --porcelain for machine-readable output
+    local changed_files=$(git status --porcelain | grep -v "^D" | cut -c4- | grep -v "^test-results/")
     
+    # Process each changed file
+    if [ -n "$changed_files" ]; then
+        echo "$changed_files" | while IFS= read -r file; do
+            if [ -n "$file" ] && [ -f "$file" ]; then
+                # Get directory structure and create it in artifacts
+                local dir_path=$(dirname "$file")
+                mkdir -p "test-results/$version_dir/artifacts/$dir_path"
+                
+                # Copy file to artifacts directory
+                cp "$file" "test-results/$version_dir/artifacts/$file"
+                echo "  Copied $file"
+                ((copied_count++))
+            fi
+        done
+    fi
+    
+    # Handle the case where there are no changed files
     if [ $copied_count -eq 0 ]; then
-        echo "  No common files found to preserve"
+        echo "  No changed files found to preserve"
     else
-        echo "  Preserved $copied_count common files"
+        echo "  Preserved $copied_count changed files"
     fi
     
     echo "Artifacts preserved in test-results/$version_dir/artifacts/"
@@ -170,7 +169,7 @@ case $ACTION in
         NEXT_VERSION=$(get_next_version)
         echo "Next test version will be: $NEXT_VERSION"
         git checkout clean
-        git reset --hard b2c2663
+        git reset --hard ae09a1f
         # Create the version directory to reserve it
         mkdir -p "test-results/$NEXT_VERSION"
         echo "Ready for agent testing!"
@@ -178,7 +177,55 @@ case $ACTION in
         echo "This test session will create results in test-results/$NEXT_VERSION/"
         ;;
         
-    finish)\n        # Find the most recently created version directory\n        VERSION=\"\"\n        if [ -d \"test-results\" ]; then\n            # Find the highest version number in test-results directory\n            highest_version=0\n            for dir in test-results/v[0-9]*; do\n                if [ -d \"$dir\" ]; then\n                    # Extract version number from directory name\n                    version_dir=$(basename \"$dir\")\n                    if [[ $version_dir =~ ^v([0-9]+)$ ]]; then\n                        version_num=${BASH_REMATCH[1]}\n                        if (( version_num > highest_version )); then\n                            highest_version=$version_num\n                            VERSION=\"$version_dir\"\n                        fi\n                    fi\n                fi\n            done\n        fi\n        \n        # If no version directory found, default to v1\n        if [ -z \"$VERSION\" ]; then\n            VERSION=\"v1\"\n        fi\n        \n        # Extract version number for template (e.g., \"v2\" -> \"2\")\n        VERSION_NUMBER=${VERSION#v}\n        \n        echo \"Finishing test session for version $VERSION...\"\n        git checkout main\n        \n        # Create README.md from template\n        create_test_results_readme \"$VERSION\" \"$VERSION_NUMBER\"\n        \n        # Preserve test artifacts\n        preserve_artifacts \"$VERSION\"\n        \n        echo \"Test session completed for version $VERSION\"\n        echo \"Test results template created at test-results/$VERSION/README.md\"\n        echo \"Test artifacts preserved in test-results/$VERSION/artifacts/\"\n        echo \"\"\n        echo \"Please review and update test-results/$VERSION/README.md with your actual results,\"\n        echo \"then commit your results:\"\n        echo \"  git add test-results/$VERSION/\"\n        echo \"  git commit -m \\\"Document $VERSION test results\\\"\"\n        ;;
+    finish)
+        # Find the most recently created version directory
+        VERSION=""
+        if [ -d "test-results" ]; then
+            # Find the highest version number in test-results directory
+            highest_version=0
+            for dir in test-results/v[0-9]*; do
+                if [ -d "$dir" ]; then
+                    # Extract version number from directory name
+                    version_dir=$(basename "$dir")
+                    if [[ $version_dir =~ ^v([0-9]+)$ ]]; then
+                        version_num=${BASH_REMATCH[1]}
+                        if (( version_num > highest_version )); then
+                            highest_version=$version_num
+                            VERSION="$version_dir"
+                        fi
+                    fi
+                fi
+            done
+        fi
+        
+        # If no version directory found, default to v1
+        if [ -z "$VERSION" ]; then
+            VERSION="v1"
+        fi
+        
+        # Extract version number for template (e.g., "v2" -> "2")
+        VERSION_NUMBER=${VERSION#v}
+        
+        echo "Finishing test session for version $VERSION..."
+        
+        # Preserve test artifacts using git status to detect changes BEFORE switching branches
+        preserve_artifacts "$VERSION"
+        
+        # Now switch to main branch
+        git checkout main
+        
+        # Create README.md from template
+        create_test_results_readme "$VERSION" "$VERSION_NUMBER"
+        
+        echo "Test session completed for version $VERSION"
+        echo "Test results template created at test-results/$VERSION/README.md"
+        echo "Test artifacts preserved in test-results/$VERSION/artifacts/"
+        echo ""
+        echo "Please review and update test-results/$VERSION/README.md with your actual results,"
+        echo "then commit your results:"
+        echo "  git add test-results/$VERSION/"
+        echo "  git commit -m \"Document $VERSION test results\""
+        ;;
         
     *)
         show_help
