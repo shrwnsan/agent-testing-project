@@ -146,3 +146,17 @@ Detailed in `AGENT-TESTING-PLAN.md`:
 2. Security Code Reviewer: Security vulnerability identification
 3. Testing Expert: Unit test creation and enhancement
 4. Documentation Writer: API documentation creation
+
+## Agent Invocation Instructions
+
+To properly test the actual agents (rather than simulating them with general-purpose agents):
+
+1. Navigate to this project directory
+2. Run Qwen Code: `qwen`
+3. Invoke agents directly using the `@` syntax from within the Qwen Code TUI
+
+For example:
+- `@code-reviewer.md Review the authentication service for general code quality`
+- `@security-code-reviewer.md Review the authentication service for security vulnerabilities`
+- `@testing-expert.md Create comprehensive unit tests for the authentication service`
+- `@documentation-writer.md Create API documentation for the authentication service`

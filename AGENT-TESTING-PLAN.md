@@ -2,9 +2,24 @@
 
 This document outlines how we'll test each of our subagents with the mock project.
 
+## Important Note About Agent Invocation
+
+Based on our v1.0.0 testing, we learned that to properly test the actual agents (rather than simulating them with general-purpose agents), you must:
+
+1. Navigate to this project directory: `cd ./test-project-for-agents` (or whatever you've named this directory)
+2. Run Qwen Code: `qwen`
+3. Invoke agents directly using the `@` syntax from within the Qwen Code TUI
+
+This ensures the agents are properly recognized and can use their defined tools.
+
 ## 1. Code Reviewer Agent
 
 **Test Scenario**: Review the authentication service for general code quality
+
+**Invocation Command**: 
+```
+@code-reviewer.md Review the authentication service for general code quality
+```
 
 **Expected Actions**:
 - Analyze code structure and organization
@@ -22,6 +37,11 @@ This document outlines how we'll test each of our subagents with the mock projec
 
 **Test Scenario**: Review the authentication service for security vulnerabilities
 
+**Invocation Command**: 
+```
+@security-code-reviewer.md Review the authentication service for security vulnerabilities
+```
+
 **Expected Actions**:
 - Identify security vulnerabilities in the code
 - Check for proper input validation
@@ -37,6 +57,11 @@ This document outlines how we'll test each of our subagents with the mock projec
 ## 3. Testing Expert Agent
 
 **Test Scenario**: Create unit tests for the authentication service
+
+**Invocation Command**: 
+```
+@testing-expert.md Create comprehensive unit tests for the authentication service
+```
 
 **Expected Actions**:
 - Analyze the code structure and dependencies
@@ -54,6 +79,11 @@ This document outlines how we'll test each of our subagents with the mock projec
 
 **Test Scenario**: Create API documentation for the authentication service
 
+**Invocation Command**: 
+```
+@documentation-writer.md Create API documentation for the authentication service
+```
+
 **Expected Actions**:
 - Analyze the code to understand endpoints and functionality
 - Create clear endpoint descriptions with examples
@@ -68,8 +98,31 @@ This document outlines how we'll test each of our subagents with the mock projec
 
 ## Testing Procedure
 
-1. Run each agent on the specified test scenario
-2. Observe the agent's ability to use its tools
-3. Verify the quality and completeness of the output
-4. Check that the agent stays within its defined scope
-5. Document any issues or limitations found
+1. **Setup**: Navigate to project directory and run `qwen`
+2. **Invoke**: Run each agent using the specific `@agent-name.md` syntax
+3. **Observe**: Monitor the agent's ability to use its defined tools
+4. **Verify**: Check the quality and completeness of the output
+5. **Validate**: Confirm that the agent stays within its defined scope
+6. **Document**: Record any issues or limitations found
+
+## Expected Differences from v1.0.0 Simulation
+
+When testing with actual agents rather than general-purpose simulations:
+
+1. **Tool Usage**: Agents will use only their defined tools (e.g., `read_file`, `write_file`) rather than having access to all general-purpose tools
+2. **Scope Adherence**: Agents will be strictly constrained to their specialized focus areas
+3. **Output Format**: Agents will produce output in their specific formats as defined in their configurations
+4. **Performance**: Agents may have different performance characteristics with their constrained toolsets
+
+## Troubleshooting
+
+If agents are not recognized:
+1. Ensure you're running `qwen` from within the project directory
+2. Verify that agent files exist in the appropriate agents directory (typically `~/.qwen/agents/` or as configured in your environment)
+3. Check that agent files have the correct YAML frontmatter format
+4. Restart Qwen Code if agents still aren't recognized
+
+## Version History
+
+- **v1.0.0** (2025-09-14): Initial testing plan
+- **v1.1.0** (2025-09-14): Updated with proper agent invocation instructions based on simulation results
