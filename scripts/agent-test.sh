@@ -55,6 +55,48 @@ get_next_version() {
     echo "v$next_version"
 }
 
+# Function to create a README.md from template for new test results
+create_test_results_readme() {
+    local version_dir=$1
+    local version_number=$2
+    
+    # Create version directory if it doesn't exist
+    mkdir -p "test-results/$version_dir"
+    
+    # Check if template exists
+    if [ ! -f "test-results/template.md" ]; then
+        echo "Warning: test-results/template.md not found, creating a basic README.md"
+        cat > "test-results/$version_dir/README.md" << EOF
+# Test Results - Version $version_number
+
+This directory contains the results of test version $version_number.
+
+## Test Overview
+
+[Description of the test setup and agents used]
+
+## Key Results
+
+[Summary of key findings from each agent]
+
+## Test Artifacts
+
+[Information about files created/modified during testing]
+
+EOF
+        return
+    fi
+    
+    # Create README.md from template
+    # Replace placeholders in the template
+    sed -e "s/{{VERSION}}/$version_number/g" \
+        -e "s/{{AGENT_LIST}}/[List of agents used in this test]/g" \
+        -e "s/{{AGENT_RESULTS}}/[Summary of results from each agent]/g" \
+        "test-results/template.md" > "test-results/$version_dir/README.md"
+    
+    echo "Created test-results/$version_dir/README.md from template"
+}
+
 # Function to preserve test artifacts
 preserve_artifacts() {
     local version_dir=$1
@@ -133,19 +175,25 @@ case $ACTION in
     finish)
         # Auto-detect next version
         VERSION=$(get_next_version)
+        
+        # Extract version number for template (e.g., "v2" -> "2")
+        VERSION_NUMBER=${VERSION#v}
+        
         echo "Finishing test session for version $VERSION..."
         git checkout main
         
-        # Create version directory if it doesn't exist
-        mkdir -p "test-results/$VERSION"
+        # Create README.md from template
+        create_test_results_readme "$VERSION" "$VERSION_NUMBER"
         
         # Preserve test artifacts
         preserve_artifacts "$VERSION"
         
         echo "Test session completed for version $VERSION"
+        echo "Test results template created at test-results/$VERSION/README.md"
         echo "Test artifacts preserved in test-results/$VERSION/artifacts/"
         echo ""
-        echo "Please review and commit your results:"
+        echo "Please review and update test-results/$VERSION/README.md with your actual results,"
+        echo "then commit your results:"
         echo "  git add test-results/$VERSION/"
         echo "  git commit -m \"Document $VERSION test results\""
         ;;
