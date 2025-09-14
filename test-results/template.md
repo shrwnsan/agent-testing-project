@@ -4,26 +4,13 @@ This directory contains the results of test version {{VERSION}} of our specializ
 
 ## Test Overview
 
-We conducted a test of our four specialized agents:
+We conducted a test of our specialized agents:
 
-1. **Code Reviewer Agent**
-2. **Security Code Reviewer Agent**
-3. **Testing Expert Agent**
-4. **Documentation Writer Agent**
+{{AGENT_LIST}}
 
 ## Key Results
 
-### Code Reviewer
-- [Results summary]
-
-### Security Code Reviewer
-- [Results summary]
-
-### Testing Expert
-- [Results summary]
-
-### Documentation Writer
-- [Results summary]
+{{AGENT_RESULTS}}
 
 ## Test Artifacts
 
