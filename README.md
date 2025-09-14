@@ -13,6 +13,7 @@ This is a mock project designed to test the capabilities of our subagents team:
 - `tests/` - Test files
 - `docs/` - Documentation files
 - `test-results/` - Versioned test results and documentation
+- `scripts/` - Automation scripts
 - `package.json` - Project configuration
 - `CHANGELOG.md` - Project change history
 
@@ -29,8 +30,22 @@ This project is intentionally simple but contains enough complexity to test all 
 
 Test results are stored in the `test-results/` directory, organized by version:
 
-- `test-results/v1.0.0/` - First comprehensive test using general-purpose agents for simulation (September 2025)
+- `test-results/v1/` - First comprehensive test using general-purpose agents for simulation (September 2025)
 
-**Important**: The v1.0.0 test used general-purpose agents to simulate our specialized agents rather than invoking the actual agent files directly. For detailed information about the test results and methodology, see `test-results/v1.0.0/SUMMARY.md`.
+**Important**: The v1 test used general-purpose agents to simulate our specialized agents rather than invoking the actual agent files directly. For detailed information about the test results and methodology, see `test-results/v1/SUMMARY.md`.
 
 For a complete history of changes to the test project itself, see `CHANGELOG.md`.
+
+## Automated Testing
+
+We provide an automation script to simplify the testing workflow:
+
+```bash
+# Start a clean testing environment
+./scripts/agent-test.sh start
+
+# After testing, prepare for results documentation
+./scripts/agent-test.sh finish
+```
+
+The script automatically handles version numbering and artifact preservation.
