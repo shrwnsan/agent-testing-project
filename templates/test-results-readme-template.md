@@ -6,14 +6,16 @@ This directory contains the results of various tests conducted on our agent syst
 
 Each version of tests is stored in a separate directory with a simple sequential version number:
 
-- `v1/` - First test (September 2025)
+- `v1/` - First test ({{DATE}})
+- `v2/` - Second test (future)
+- `v3/` - Third test (future)
 
 ## Versioning Approach
 
 We use simple sequential versioning for our test iterations:
 
 - **v1**: First test
-- **v2**: Second test
+- **v2**: Second test  
 - **v3**: Third test
 - And so on...
 
