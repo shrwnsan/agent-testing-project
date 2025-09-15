@@ -47,15 +47,7 @@ Each test version directory contains a README.md file that summarizes the result
 
 ## Using This Framework with Other AI Coding Assistants
 
-This testing framework can be adapted for other AI coding assistants with minimal modifications:
-
-1. **Qwen Code**: Uses the `@agent-name` syntax to invoke specialized agents directly
-2. **Claude Code**: Can utilize custom tools and prompt engineering to simulate specialized roles
-3. **GitHub Copilot**: Can be guided with specific comments and structured prompts to perform specialized tasks
-4. **Gemini CLI**: Can leverage function calling capabilities to create specialized agent workflows
-5. **OpenCode**: Can implement role-specific prompting strategies to achieve similar results
-
-The key is to provide each AI assistant with clear role definitions, specific instructions, and access to appropriate tools for each specialized task.
+This testing framework can be adapted for other AI coding assistants with minimal modifications (Qwen Code, Claude Code, OpenAI Codex, Gemini CLI, OpenCode, etc.). The key is to provide each AI assistant with clear role definitions, specific instructions, and access to appropriate tools for each specialized task.
 
 ## Automated Testing
 
