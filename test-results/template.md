@@ -14,26 +14,29 @@ We conducted a test of our specialized agents:
 
 ## Test Artifacts
 
-During this test, the agents created or modified the following files:
+During this test, the agents created or modified the following files, which have been preserved in the `artifacts/` subdirectory:
 
-- `docs/api.md` - API documentation
-- `tests/authService.test.js` - Test suite
+{{ARTIFACTS_LIST}}
 
-These files were generated in their respective directories and demonstrate the types of output our agents would produce. They have been preserved in the `artifacts/` subdirectory to maintain the original directory structure while keeping them organized within this version's directory:
+Additionally, detailed analysis results from each specialized agent are available in separate files:
+{{SUBAGENT_RESULTS_LIST}}
 
-- `artifacts/docs/api.md` - API documentation
-- `artifacts/tests/authService.test.js` - Test suite
+## Artifact Details
 
-This preserves the artifacts for historical reference while maintaining a clean state in the main project directories for future testing.
+This section provides detailed information about each artifact created by the agents during the test, including their purpose, content, and key features.
+
+{{ARTIFACT_DETAILS}}
+
+### Subagent Analysis Files
+Detailed analysis results from each specialized agent:
+{{SUBAGENT_ANALYSIS_DETAILS}}
 
 ## Important Note
 
-This test used [actual agents / general-purpose agents simulating actual agents] rather than [the opposite]. [Explanation of approach taken and why].
+This test used {{AGENT_TYPE}} rather than {{ALTERNATIVE_AGENT_TYPE}}. {{APPROACH_EXPLANATION}}.
 
 ## Future Testing
 
-For future tests, we recommend:
-1. Testing actual agent invocation in the proper context
-2. Using simple sequential versioning (v1, v2, v3, etc.) for test iterations
-3. Maintaining clean test environments between iterations
-4. Preserving test artifacts for historical reference
+Based on the findings and execution of this test, we recommend the following for future testing iterations:
+
+{{FUTURE_TESTING_RECOMMENDATIONS}}
