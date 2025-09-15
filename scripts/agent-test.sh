@@ -111,23 +111,19 @@ preserve_artifacts() {
     
     # Get list of modified, added, or deleted files (excluding the test-results directory itself)
     # We use --porcelain for machine-readable output
-    local changed_files=$(git status --porcelain | grep -v "^D" | cut -c4- | grep -v "^test-results/")
-    
-    # Process each changed file
-    if [ -n "$changed_files" ]; then
-        echo "$changed_files" | while IFS= read -r file; do
-            if [ -n "$file" ] && [ -f "$file" ]; then
-                # Get directory structure and create it in artifacts
-                local dir_path=$(dirname "$file")
-                mkdir -p "test-results/$version_dir/artifacts/$dir_path"
-                
-                # Copy file to artifacts directory
-                cp "$file" "test-results/$version_dir/artifacts/$file"
-                echo "  Copied $file"
-                ((copied_count++))
-            fi
-        done
-    fi
+    # Process each changed file using process substitution to avoid subshell variable issues
+    while IFS= read -r file; do
+        if [ -n "$file" ] && [ -f "$file" ]; then
+            # Get directory structure and create it in artifacts
+            local dir_path=$(dirname "$file")
+            mkdir -p "test-results/$version_dir/artifacts/$dir_path"
+            
+            # Copy file to artifacts directory
+            cp "$file" "test-results/$version_dir/artifacts/$file"
+            echo "  Copied $file"
+            ((copied_count++))
+        fi
+    done < <(git status --porcelain | grep -v "^D" | cut -c4- | grep -v "^test-results/")
     
     # Handle the case where there are no changed files
     if [ $copied_count -eq 0 ]; then
@@ -169,7 +165,7 @@ case $ACTION in
         NEXT_VERSION=$(get_next_version)
         echo "Next test version will be: $NEXT_VERSION"
         git checkout clean
-        git reset --hard ae09a1f
+        git reset --hard 71c3698
         # Create the version directory to reserve it
         mkdir -p "test-results/$NEXT_VERSION"
         echo "Ready for agent testing!"
@@ -211,8 +207,16 @@ case $ACTION in
         # Preserve test artifacts using git status to detect changes BEFORE switching branches
         preserve_artifacts "$VERSION"
         
-        # Now switch to main branch
-        git checkout main
+        # Verify that artifacts were preserved (indicating the process worked)
+        if [ -d "test-results/$VERSION/artifacts" ] && [ "$(find "test-results/$VERSION/artifacts" -type f | head -5 | wc -l)" -gt 0 ]; then
+            echo "Verified: Artifacts were preserved ($(find "test-results/$VERSION/artifacts" -type f | head -5 | wc -l) sample files found)"
+        else
+            echo "Warning: No artifacts found in preservation directory"
+        fi
+        
+        # Force checkout main branch since artifacts are already preserved
+        echo "Switching to main branch (artifacts preserved in test-results/$VERSION/artifacts/)..."
+        git checkout -f main
         
         # Create README.md from template
         create_test_results_readme "$VERSION" "$VERSION_NUMBER"
