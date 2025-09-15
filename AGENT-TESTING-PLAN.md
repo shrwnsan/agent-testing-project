@@ -6,7 +6,7 @@ This document outlines how we'll test each of our subagents with the mock projec
 
 Based on our v1.0.0 testing, we learned that to properly test the actual agents (rather than simulating them with general-purpose agents), you must:
 
-1. Navigate to this project directory: `cd ./test-project-for-agents` (or whatever you've named this directory)
+1. Navigate to this project directory: `cd ./agent-testing-project` (or whatever you've named this directory)
 2. Run Qwen Code: `qwen`
 3. Invoke agents directly using the `@` syntax from within the Qwen Code TUI
 
