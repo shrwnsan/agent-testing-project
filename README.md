@@ -122,20 +122,6 @@ This command:
    git commit -m "Document vX test results"
    ```
 
-## Automated Testing
-
-We provide an automation script to simplify the testing workflow:
-
-```bash
-# Start a clean testing environment
-./scripts/agent-test.sh start
-
-# After testing, prepare for results documentation
-./scripts/agent-test.sh finish
-```
-
-The script automatically handles version numbering and artifact preservation, ensuring consistent testing conditions for each evaluation.
-
 ### Testing Workflow
 
 The following diagram illustrates the complete testing workflow when using our automation script:
