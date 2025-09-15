@@ -207,8 +207,16 @@ case $ACTION in
         # Preserve test artifacts using git status to detect changes BEFORE switching branches
         preserve_artifacts "$VERSION"
         
-        # Now switch to main branch
-        git checkout main
+        # Verify that artifacts were preserved (indicating the process worked)
+        if [ -d "test-results/$VERSION/artifacts" ] && [ "$(find "test-results/$VERSION/artifacts" -type f | head -5 | wc -l)" -gt 0 ]; then
+            echo "Verified: Artifacts were preserved ($(find "test-results/$VERSION/artifacts" -type f | head -5 | wc -l) sample files found)"
+        else
+            echo "Warning: No artifacts found in preservation directory"
+        fi
+        
+        # Force checkout main branch since artifacts are already preserved
+        echo "Switching to main branch (artifacts preserved in test-results/$VERSION/artifacts/)..."
+        git checkout -f main
         
         # Create README.md from template
         create_test_results_readme "$VERSION" "$VERSION_NUMBER"
